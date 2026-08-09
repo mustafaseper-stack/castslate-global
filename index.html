@@ -1,855 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CastSlate - Student Board</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastSlate | Global Screen Mirroring & Cloud Board</title>
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: #1a1a1a; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
-            touch-action: none; 
-            font-family: sans-serif;
-        }
-        
-        #container { 
-            position: relative; 
-            width: 100vw; 
-            height: 56.25vw; 
-            max-height: 100vh; 
-            max-width: 177.77vh; 
-            background-color: white; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            overflow: hidden;
+        /* --- MODERN CSS RESET & VARIABLES --- */
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-color: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
-        canvas { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        #board { z-index: 10; }
-        #hlBoard { z-index: 11; pointer-events: none; } 
-        #geoBoard { z-index: 12; pointer-events: none; }
-        #laserBoard { z-index: 15; pointer-events: none; }
-        
-        #imageContainer {
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 1; 
-            pointer-events: none;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        #formulaContainer {
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 2; 
-            pointer-events: none;
-        }
-        
-        .math-formula {
-            position: absolute;
-            color: black;
-            transform-origin: top left;
-        }
-        
-        #toolbar { position: absolute; bottom: 20px; right: 20px; z-index: 20; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.9); padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s ease; }
-        .btn { padding: 10px 20px; font-size: 16px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;}
-        .pen-active { background-color: #d8b4e2; color: black; border: 2px solid #800080;}
-        .eraser-active { background-color: #e2e8f0; color: black; border: 2px solid #94a3b8;}
-        .inactive { background-color: white; color: gray; border: 2px solid transparent;}
-        #thickness { width: 100px; cursor: pointer; }
-
-        #pinOverlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #1a1a1a;
-            z-index: 9999;
+        /* --- NAVBAR --- */
+        .navbar {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            color: white;
+            padding: 20px 5%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 90%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        #pinBox {
-            background-color: #2c2c2c;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        #pinBox h2 { margin-top: 0; color: #ffb74d; }
-        #pinBox p { color: #ccc; margin-bottom: 25px; }
-        #pinInput {
-            font-size: 32px;
-            padding: 10px;
-            width: 150px;
-            text-align: center;
-            border-radius: 8px;
-            border: 2px solid #546e7a;
-            background-color: #1a1a1a;
+
+        .nav-join-btn {
+            background: rgba(255,255,255,0.1);
             color: white;
-            outline: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .nav-join-btn:hover {
+            background: var(--primary-color);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 160px 20px 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
             margin-bottom: 20px;
-            letter-spacing: 10px;
+            letter-spacing: -1px;
         }
-        #pinInput:focus { border-color: #ffb74d; }
-        #pinSubmitBtn {
-            font-size: 18px;
-            padding: 12px 40px;
-            background-color: #ffb74d;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-inline: auto;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            text-decoration: none;
             font-weight: bold;
-            transition: 0.2s;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        #pinSubmitBtn:hover { background-color: #ffa726; transform: scale(1.05); }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-join {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-download {
+            background-color: var(--surface-color);
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-download:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* --- FEATURES GRID --- */
+        .features-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.5rem; }
+            .btn-group { flex-direction: column; }
+            .btn { justify-content: center; }
+        }
     </style>
 </head>
 <body>
-    <div id="pinOverlay">
-        <div id="pinBox">
-            <h2>Access Protected</h2>
-            <p>Please enter the 4-digit PIN from the tablet to join the session.</p>
-            <input type="password" id="pinInput" maxlength="4" placeholder="****" autocomplete="off" onkeypress="if(event.key === 'Enter') checkPin()"><br>
-            <button id="pinSubmitBtn" onclick="checkPin()">Connect</button>
+
+    <!-- Üst Menü -->
+    <nav class="navbar">
+        <div class="logo">CastSlate</div>
+        <a href="/board" class="nav-join-btn">👨‍🎓 Student Login</a>
+    </nav>
+
+    <!-- Ana Vitrin -->
+    <header class="hero">
+        <h1>Transform Your Tablet Into a <br> <span style="color:var(--primary-color);">Global Smartboard.</span></h1>
+        <p>Developed by an active teacher. CastSlate lets you mirror your screen locally or teach remotely via zero-latency Cloud Board.</p>
+        
+        <div class="btn-group">
+            <!-- Öğrenciyi direkt Cloud Board'a yollar -->
+            <a href="/board" class="btn btn-join">
+                <span style="font-size: 1.2rem;">👨‍🎓</span> Join Remote Class
+            </a>
+            <!-- Öğretmenler için indirme linkleri -->
+            <a href="https://apps.apple.com/us/app/castslate-whiteboard-cast/id6780668638" class="btn btn-download">
+                🍏 App Store
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.mustafaseper.castslate" class="btn btn-download">
+                🤖 Google Play
+            </a>
         </div>
-    </div>
+    </header>
+
+    <!-- Özellikler Kartları -->
+    <section class="features-container">
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">☁️</div>
+                <h3>Cloud Board Sync</h3>
+                <p>Generate a dynamic PIN and instantly share your live whiteboard with students anywhere in the world. Zero lag, zero configuration.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📐</div>
+                <h3>Smart Geometry Set</h3>
+                <p>Equipped with a highly responsive virtual ruler, compass, protractor, and set square for flawless math and geometry lessons.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">✨</div>
+                <h3>Vector Eraser & Auto-Shape</h3>
+                <p>Effortlessly clean your board with the smart vector eraser. Draw rough shapes and watch them snap into perfect geometry.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📺</div>
+                <h3>Perfect 16:9 Ratio</h3>
+                <p>No more ugly black bars. CastSlate is optimized specifically for classroom smartboards, projectors, and external monitors.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alt Bilgi -->
+    <footer>
+        <p>&copy; 2026 CastSlate Global. All rights reserved.</p>
+    </footer>
 
-    <div id="container">
-        <div id="imageContainer"></div>
-        <div id="formulaContainer"></div>
-        <canvas id="board"></canvas>
-        <canvas id="hlBoard"></canvas> 
-        <canvas id="geoBoard"></canvas>
-        <canvas id="laserBoard"></canvas>
-    </div>
-    
-    <div id="toolbar">
-        <label for="thickness" style="font-weight:bold; color:#333;">Size: <span id="thickVal">4px</span></label>
-        <input type="range" id="thickness" min="2" max="30" value="4" oninput="updateThickness(this.value)">
-        <button id="penBtn" class="btn pen-active" onclick="setTool('pen')">Pen 🖊️</button>
-        <button id="eraserBtn" class="btn inactive" onclick="setTool('eraser')">Eraser 🧽</button>
-    </div>
-
-    <script>
-        const container = document.getElementById('container');
-        const canvas = document.getElementById('board');
-        const hlCanvas = document.getElementById('hlBoard'); 
-        const geoCanvas = document.getElementById('geoBoard');
-        const laserCanvas = document.getElementById('laserBoard');
-        const imageContainer = document.getElementById('imageContainer');
-        const formulaContainer = document.getElementById('formulaContainer'); 
-        
-        const ctx = canvas.getContext('2d');
-        const hlCtx = hlCanvas.getContext('2d'); 
-        const geoCtx = geoCanvas.getContext('2d');
-        const laserCtx = laserCanvas.getContext('2d');
-        
-        const offscreenCanvas = document.createElement('canvas');
-        const offCtx = offscreenCanvas.getContext('2d');
-        
-        function resize() { 
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = offscreenCanvas.width || container.clientWidth;
-            tempCanvas.height = offscreenCanvas.height || container.clientHeight;
-            
-            if (offscreenCanvas.width > 0 && offscreenCanvas.height > 0) {
-                tempCtx.drawImage(offscreenCanvas, 0, 0);
-            }
-
-            canvas.width = container.clientWidth; 
-            canvas.height = container.clientHeight; 
-            hlCanvas.width = container.clientWidth; 
-            hlCanvas.height = container.clientHeight; 
-            geoCanvas.width = container.clientWidth;
-            geoCanvas.height = container.clientHeight;
-            laserCanvas.width = container.clientWidth; 
-            laserCanvas.height = container.clientHeight;
-            offscreenCanvas.width = container.clientWidth;
-            offscreenCanvas.height = container.clientHeight;
-
-            if (tempCanvas.width > 0 && canvas.width > 0) {
-                ctx.globalCompositeOperation = 'source-over';
-                offCtx.globalCompositeOperation = 'source-over';
-                
-                ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
-                offCtx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
-            }
-        }
-        window.addEventListener('resize', resize); 
-        resize();
-
-        const ws = new WebSocket('wss://castslate-cloud.onrender.com');
-
-        let studentColor = 4286578816; 
-        let studentWidth = 4.0;
-        let isEraser = false;
-        let isLocked = false; 
-
-        let laserStrokes = [];
-        let currentLaserStroke = null;
-        let activeHlAlpha = 0; 
-
-        let isAuthenticated = false;
-
-        function checkPin() {
-            const entered = document.getElementById('pinInput').value;
-            if (entered.trim() === "") {
-                alert("Please enter a valid PIN.");
-                return;
-            }
-            
-            document.getElementById('pinOverlay').style.display = 'none';
-            isAuthenticated = true;
-
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: "join_room", pin: entered }));
-            } else {
-                ws.onopen = () => {
-                    ws.send(JSON.stringify({ type: "join_room", pin: entered }));
-                };
-            }
-        }
-
-        let geoState = { tool: 'none', cx: 0, cy: 0, scale: 1, rotation: 0, compassAngle: 0, compassRadius: 100 };
-        let isInteractingWithTool = false;
-        let toolInteractionInfo = null;
-
-        function updateThickness(val) {
-            studentWidth = parseFloat(val);
-            document.getElementById('thickVal').innerText = val + 'px';
-        }
-
-        function setTool(tool) {
-            if (isLocked) return;
-            const penBtn = document.getElementById('penBtn');
-            const eraserBtn = document.getElementById('eraserBtn');
-            if (tool === 'pen') {
-                isEraser = false;
-                studentColor = 4286578816; 
-                penBtn.className = 'btn pen-active'; 
-                eraserBtn.className = 'btn inactive';
-            } else {
-                isEraser = true;
-                studentColor = 4294967295; 
-                penBtn.className = 'btn inactive'; 
-                eraserBtn.className = 'btn eraser-active';
-            }
-        }
-
-        function drawGeoTool(data) {
-            geoCtx.clearRect(0, 0, geoCanvas.width, geoCanvas.height);
-            if (data.tool === 'none') return;
-
-            let w = 0, h = 0;
-            if (data.tool === 'ruler') { w = 500; h = 60; }
-            else if (data.tool === 'protractor') { w = 300; h = 150; }
-            else if (data.tool === 'setSquare') { w = 200; h = 200; }
-            else if (data.tool === 'compass') { w = 300; h = 300; }
-
-            let center_x = data.cx * canvas.width;
-            let center_y = data.cy * canvas.height;
-            let cScale = data.scale * (canvas.width / 1000);
-
-            let pivotX = w / 2;
-            let pivotY = (data.tool === 'protractor') ? h : h / 2;
-
-            geoCtx.save();
-            geoCtx.translate(center_x, center_y);
-            geoCtx.rotate(data.rotation);
-            geoCtx.scale(cScale, cScale);
-            geoCtx.translate(-pivotX, -pivotY);
-
-            geoCtx.fillStyle = 'rgba(96, 125, 139, 0.2)'; 
-            geoCtx.strokeStyle = 'rgba(96, 125, 139, 0.8)'; 
-            geoCtx.lineWidth = 1.5;
-
-            function safeRoundRect(x, y, width, height, r) {
-                geoCtx.beginPath();
-                geoCtx.moveTo(x + r, y);
-                geoCtx.lineTo(x + width - r, y);
-                geoCtx.quadraticCurveTo(x + width, y, x + width, y + r);
-                geoCtx.lineTo(x + width, y + height - r);
-                geoCtx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-                geoCtx.lineTo(x + r, y + height);
-                geoCtx.quadraticCurveTo(x, y + height, x, y + height - r);
-                geoCtx.lineTo(x, y + r);
-                geoCtx.quadraticCurveTo(x, y, x + r, y);
-                geoCtx.closePath();
-            }
-
-            if (data.tool === 'ruler') {
-                safeRoundRect(0, 0, 500, 60, 8);
-                geoCtx.fill();
-                geoCtx.stroke();
-
-                geoCtx.fillStyle = '#333';
-                geoCtx.font = 'bold 10px sans-serif';
-                geoCtx.textAlign = 'center';
-                geoCtx.textBaseline = 'top';
-                geoCtx.beginPath();
-                for (let i = 0; i <= 500; i += 10) {
-                    let isMajor = (i % 50 === 0);
-                    let lineLen = isMajor ? 15 : 8;
-                    geoCtx.moveTo(i, 0);
-                    geoCtx.lineTo(i, lineLen);
-                    if (isMajor) { geoCtx.fillText(Math.floor(i / 10), i, lineLen + 2); }
-                }
-                geoCtx.stroke();
-            } 
-            else if (data.tool === 'protractor') {
-                geoCtx.beginPath();
-                geoCtx.arc(150, 150, 150, Math.PI, 0, false); 
-                geoCtx.lineTo(300, 150);
-                geoCtx.lineTo(0, 150);
-                geoCtx.closePath();
-                geoCtx.fill();
-                geoCtx.stroke();
-
-                geoCtx.beginPath();
-                geoCtx.arc(150, 150, 5, 0, Math.PI * 2);
-                geoCtx.stroke();
-                
-                geoCtx.beginPath();
-                geoCtx.moveTo(140, 150); geoCtx.lineTo(160, 150);
-                geoCtx.moveTo(150, 140); geoCtx.lineTo(150, 150);
-                geoCtx.stroke();
-
-                geoCtx.fillStyle = '#333';
-                geoCtx.font = 'bold 10px sans-serif';
-                geoCtx.textAlign = 'center';
-                geoCtx.textBaseline = 'top';
-                geoCtx.beginPath();
-                for (let i = 0; i <= 180; i += 5) {
-                    let isMajor = (i % 10 === 0);
-                    let lineLen = isMajor ? 15 : 8;
-                    let angle = Math.PI + (i * Math.PI / 180);
-                    
-                    let outerX = 150 + 150 * Math.cos(angle);
-                    let outerY = 150 + 150 * Math.sin(angle);
-                    let innerX = 150 + (150 - lineLen) * Math.cos(angle);
-                    let innerY = 150 + (150 - lineLen) * Math.sin(angle);
-                    
-                    geoCtx.moveTo(outerX, outerY);
-                    geoCtx.lineTo(innerX, innerY);
-
-                    if (isMajor) {
-                        let textX = 150 + (150 - lineLen - 12) * Math.cos(angle);
-                        let textY = 150 + (150 - lineLen - 12) * Math.sin(angle) - 6;
-                        geoCtx.fillText(i, textX, textY);
-                    }
-                }
-                geoCtx.stroke();
-            } 
-            else if (data.tool === 'setSquare') {
-                geoCtx.beginPath();
-                geoCtx.moveTo(0, 200); geoCtx.lineTo(0, 0); geoCtx.lineTo(200, 200); geoCtx.closePath();
-
-                geoCtx.moveTo(25, 185); geoCtx.lineTo(160, 185); geoCtx.lineTo(25, 40); geoCtx.closePath();
-                
-                geoCtx.fill('evenodd');
-                geoCtx.stroke();
-
-                geoCtx.beginPath();
-                for (let i = 0; i <= 200; i += 10) {
-                    let lineLen = (i % 50 === 0) ? 15 : 8;
-                    geoCtx.moveTo(0, 200 - i); geoCtx.lineTo(lineLen, 200 - i);
-                }
-                for (let i = 0; i <= 200; i += 10) {
-                    let lineLen = (i % 50 === 0) ? 15 : 8;
-                    geoCtx.moveTo(i, 200); geoCtx.lineTo(i, 200 - lineLen);
-                }
-                geoCtx.stroke();
-            } 
-            else if (data.tool === 'compass') {
-                geoCtx.lineCap = 'round';
-                let r = data.compassRadius || 100;
-                let cAngle = data.compassAngle || 0;
-                
-                geoCtx.beginPath();
-                geoCtx.setLineDash([5, 5]);
-                geoCtx.strokeStyle = 'rgba(96, 125, 139, 0.3)';
-                geoCtx.arc(150, 150, r, 0, Math.PI * 2);
-                geoCtx.stroke();
-                geoCtx.setLineDash([]); 
-
-                let hingeX = 150 + (r/2) * Math.cos(cAngle) - 100 * Math.sin(cAngle);
-                let hingeY = 150 + (r/2) * Math.sin(cAngle) - 100 * Math.cos(cAngle);
-
-                geoCtx.strokeStyle = '#90a4ae'; geoCtx.lineWidth = 8;
-                geoCtx.beginPath();
-                geoCtx.moveTo(hingeX, hingeY); geoCtx.lineTo(150, 150); 
-                geoCtx.moveTo(hingeX, hingeY); geoCtx.lineTo(150 + (r * 0.8) * Math.cos(cAngle), 150 + (r * 0.8) * Math.sin(cAngle)); 
-                geoCtx.stroke();
-
-                geoCtx.strokeStyle = '#ffb74d'; geoCtx.lineWidth = 8;
-                geoCtx.beginPath();
-                geoCtx.moveTo(150 + (r * 0.8) * Math.cos(cAngle), 150 + (r * 0.8) * Math.sin(cAngle)); 
-                geoCtx.lineTo(150 + r * Math.cos(cAngle), 150 + r * Math.sin(cAngle)); 
-                geoCtx.stroke();
-
-                geoCtx.strokeStyle = '#212121'; geoCtx.lineWidth = 3;
-                geoCtx.beginPath();
-                geoCtx.moveTo(150 + (r * 0.95) * Math.cos(cAngle), 150 + (r * 0.95) * Math.sin(cAngle)); 
-                geoCtx.lineTo(150 + r * Math.cos(cAngle), 150 + r * Math.sin(cAngle)); 
-                geoCtx.stroke();
-
-                geoCtx.fillStyle = '#546e7a'; geoCtx.beginPath(); geoCtx.arc(hingeX, hingeY, 12, 0, Math.PI * 2); geoCtx.fill();
-                geoCtx.fillStyle = '#ffffff'; geoCtx.beginPath(); geoCtx.arc(hingeX, hingeY, 6, 0, Math.PI * 2); geoCtx.fill();
-                geoCtx.fillStyle = '#212121'; geoCtx.beginPath(); geoCtx.arc(150, 150, 3, 0, Math.PI * 2); geoCtx.fill();
-            }
-
-            if (data.tool !== 'compass') {
-                geoCtx.shadowColor = 'rgba(0,0,0,0.3)'; geoCtx.shadowBlur = 6; geoCtx.shadowOffsetY = 2;
-                geoCtx.fillStyle = '#ffffff'; geoCtx.beginPath(); geoCtx.arc(w, h, 18, 0, Math.PI * 2); geoCtx.fill();
-                geoCtx.shadowColor = 'transparent'; geoCtx.strokeStyle = '#90a4ae'; geoCtx.lineWidth = 2; geoCtx.stroke();
-                geoCtx.fillStyle = '#455a64'; geoCtx.font = 'bold 20px sans-serif'; geoCtx.textAlign = 'center'; geoCtx.textBaseline = 'middle';
-                geoCtx.fillText('⤡', w, h);
-            }
-            geoCtx.restore();
-        }
-
-        function getLocalGeoCoords(globalX, globalY) {
-            let w = 0, h = 0;
-            if (geoState.tool === 'ruler') { w = 500; h = 60; }
-            else if (geoState.tool === 'protractor') { w = 300; h = 150; }
-            else if (geoState.tool === 'setSquare') { w = 200; h = 200; }
-            else if (geoState.tool === 'compass') { w = 300; h = 300; }
-
-            let cx = geoState.cx * canvas.width;
-            let cy = geoState.cy * canvas.height;
-            let cScale = geoState.scale * (canvas.width / 1000);
-
-            let pivotX = w / 2;
-            let pivotY = (geoState.tool === 'protractor') ? h : h / 2;
-
-            let dx = globalX - cx; let dy = globalY - cy;
-            let cosR = Math.cos(-geoState.rotation); let sinR = Math.sin(-geoState.rotation);
-            let lx = (dx * cosR - dy * sinR) / cScale; let ly = (dx * sinR + dy * cosR) / cScale;
-
-            return { x: lx + pivotX, y: ly + pivotY, w: w, h: h, cScale: cScale, cx: geoState.cx, cy: geoState.cy, pivotX: pivotX, pivotY: pivotY };
-        }
-
-        function checkToolHit(gx, gy) {
-            if (geoState.tool === 'none') return null;
-            let local = getLocalGeoCoords(gx, gy);
-
-            if (geoState.tool === 'compass') {
-                let r = geoState.compassRadius; let a = geoState.compassAngle;
-                let px = 150 + r * Math.cos(a); let py = 150 + r * Math.sin(a);
-                let hx = 150 + (r/2) * Math.cos(a) - 100 * Math.sin(a); let hy = 150 + (r/2) * Math.sin(a) - 100 * Math.cos(a);
-
-                if (Math.hypot(local.x - px, local.y - py) < 50) return { mode: 'resize' };
-                if (Math.hypot(local.x - hx, local.y - hy) < 50) return { mode: 'draw' };
-                if (Math.hypot(local.x - 150, local.y - 150) < 50 || (local.x > 50 && local.x < 250 && local.y > 50 && local.y < 250)) {
-                    return { mode: 'move', startCX: geoState.cx, startCY: geoState.cy, startGx: gx, startGy: gy };
-                }
-                return null;
-            } else {
-                if (Math.hypot(local.x - local.w, local.y - local.h) < 30) {
-                    return { mode: 'tool_control', startScale: geoState.scale, startRotation: geoState.rotation, startGx: gx, startGy: gy, cx: geoState.cx * canvas.width, cy: geoState.cy * canvas.height };
-                }
-                if (local.x >= 20 && local.x <= local.w - 20 && local.y >= 20 && local.y <= local.h - 20) {
-                    return { mode: 'move', startCX: geoState.cx, startCY: geoState.cy, startGx: gx, startGy: gy };
-                }
-            }
-            return null;
-        }
-
-        function snapToTool(px, py) {
-            if (geoState.tool === 'none' || geoState.tool === 'compass') return {x: px, y: py};
-
-            let local = getLocalGeoCoords(px, py);
-            let localX = local.x; let localY = local.y;
-            let snapped = false;
-
-            if (geoState.tool === 'ruler') {
-                if (localX >= -20 && localX <= local.w + 20 && localY >= -20 && localY <= local.h + 20) { localY = (localY < local.h / 2) ? 0 : local.h; snapped = true; }
-            } else if (geoState.tool === 'protractor') {
-                if (localX >= -20 && localX <= local.w + 20 && localY >= -20 && localY <= local.h + 20) {
-                    if (localY > local.h - 20) { localY = local.h; } 
-                    else {
-                        let angle = Math.atan2(localY - local.h, localX - local.w/2);
-                        localX = local.w/2 + (local.w/2) * Math.cos(angle); localY = local.h + (local.w/2) * Math.sin(angle);
-                    }
-                    snapped = true;
-                }
-            } else if (geoState.tool === 'setSquare') {
-                if (localX >= -20 && localX <= local.w + 20 && localY >= -20 && localY <= local.h + 20) {
-                    let dLeft = Math.abs(localX); let dBottom = Math.abs(local.h - localY); let dHypo = Math.abs(localX + localY - local.w) / 1.414;
-                    if (dLeft < dBottom && dLeft < dHypo) { localX = 0; } else if (dBottom < dLeft && dBottom < dHypo) { localY = local.h; } 
-                    else { localX = (localX - localY + local.w) / 2; localY = (-localX + localY + local.w) / 2; }
-                    snapped = true;
-                }
-            }
-
-            if (snapped) {
-                localX -= local.pivotX; localY -= local.pivotY;
-                let cx = geoState.cx * canvas.width; let cy = geoState.cy * canvas.height;
-                let globalX = cx + (localX * local.cScale * Math.cos(geoState.rotation) - localY * local.cScale * Math.sin(geoState.rotation));
-                let globalY = cy + (localX * local.cScale * Math.sin(geoState.rotation) + localY * local.cScale * Math.cos(geoState.rotation));
-                return {x: globalX, y: globalY};
-            }
-            return {x: px, y: py};
-        }
-
-        function animateLaser() {
-            laserCtx.clearRect(0, 0, laserCanvas.width, laserCanvas.height);
-            const now = Date.now();
-            laserStrokes = laserStrokes.filter(stroke => {
-                if (stroke.releaseTime !== null) { return (now - stroke.releaseTime) <= 2000; }
-                return true;
-            });
-            
-            laserStrokes.forEach(stroke => {
-                if (stroke.points.length < 2) return;
-                let opacity = 1.0;
-                if (stroke.releaseTime !== null) { opacity = 1.0 - Math.min((now - stroke.releaseTime) / 2000.0, 1.0); }
-
-                if (opacity > 0) {
-                    laserCtx.beginPath();
-                    laserCtx.moveTo(stroke.points[0].x * canvas.width, stroke.points[0].y * canvas.height);
-                    for (let i = 1; i < stroke.points.length; i++) {
-                        laserCtx.lineTo(stroke.points[i].x * canvas.width, stroke.points[i].y * canvas.height);
-                    }
-                    laserCtx.lineCap = 'round'; laserCtx.lineJoin = 'round'; laserCtx.lineWidth = stroke.width;
-                    laserCtx.strokeStyle = `rgba(255, 23, 68, ${opacity})`;
-                    laserCtx.shadowBlur = 0; laserCtx.shadowColor = 'transparent';
-                    laserCtx.stroke();
-                }
-            });
-            requestAnimationFrame(animateLaser);
-        }
-        animateLaser(); 
-
-        let lastX = null;
-        let lastY = null;
-        let isSyncing = false;
-
-        function endSync() {
-            if (!isSyncing) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.drawImage(offscreenCanvas, 0, 0);
-            isSyncing = false;
-        }
-
-        // YENİ: Nokta Çizim Mantığını Merkezi Fonksiyona Aldık
-        function processTeacherPoint(pX, pY, pColor, pWidth) {
-            if (pColor === 4294901777) { 
-                if (pX === null || pY === null || pX === undefined) {
-                    if (currentLaserStroke !== null) {
-                        currentLaserStroke.releaseTime = Date.now();
-                        currentLaserStroke = null;
-                    }
-                } else {
-                    if (currentLaserStroke === null) {
-                        currentLaserStroke = { points: [], width: pWidth, releaseTime: null };
-                        laserStrokes.push(currentLaserStroke);
-                    }
-                    currentLaserStroke.points.push({ x: pX, y: pY });
-                }
-                return;
-            }
-
-            const targetCtx = isSyncing ? offCtx : ctx;
-
-            if (pColor === 0 || pColor === 0x00000000 || pX === null || pY === null || pX === undefined) { 
-                if (activeHlAlpha > 0) {
-                    const drawToCtx = isSyncing ? offCtx : ctx;
-                    drawToCtx.globalAlpha = activeHlAlpha;
-                    drawToCtx.drawImage(hlCanvas, 0, 0);
-                    drawToCtx.globalAlpha = 1.0;
-                    
-                    if (!isSyncing) {
-                        offCtx.globalAlpha = activeHlAlpha; offCtx.drawImage(hlCanvas, 0, 0); offCtx.globalAlpha = 1.0;
-                    }
-                    hlCtx.clearRect(0, 0, hlCanvas.width, hlCanvas.height);
-                    activeHlAlpha = 0;
-                }
-                targetCtx.beginPath(); lastX = null; lastY = null;
-                return; 
-            }
-            
-            const x = pX * canvas.width; 
-            const y = pY * canvas.height;
-
-            let prevX = lastX; let prevY = lastY;
-            if (prevX === null) { prevX = x; prevY = y; }
-
-            let a = ((pColor >>> 24) & 0xFF) / 255.0;
-            let r = ((pColor >>> 16) & 0xFF);
-            let g = ((pColor >>> 8) & 0xFF);
-            let b = (pColor & 0xFF);
-
-            if (a < 1.0 && pColor !== 4294967295) {
-                activeHlAlpha = a; hlCanvas.style.opacity = a; 
-                hlCtx.beginPath(); hlCtx.moveTo(prevX, prevY); hlCtx.lineTo(x, y);
-                hlCtx.lineWidth = pWidth; hlCtx.lineCap = 'square'; hlCtx.lineJoin = 'round';
-                hlCtx.strokeStyle = `rgb(${r}, ${g}, ${b})`; 
-                hlCtx.stroke();
-            } else {
-                targetCtx.beginPath(); targetCtx.moveTo(prevX, prevY); targetCtx.lineTo(x, y);
-                targetCtx.lineWidth = pWidth; targetCtx.lineCap = 'round'; targetCtx.lineJoin = 'round';
-
-                if (pColor === 4294967295) { 
-                    targetCtx.globalCompositeOperation = 'destination-out'; targetCtx.strokeStyle = 'rgba(0,0,0,1)';
-                } else { 
-                    targetCtx.globalCompositeOperation = 'source-over'; targetCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`; 
-                }
-                targetCtx.stroke();
-                
-                if (!isSyncing) {
-                    offCtx.beginPath(); offCtx.moveTo(prevX, prevY); offCtx.lineTo(x, y);
-                    offCtx.lineCap = targetCtx.lineCap; offCtx.lineJoin = 'round'; offCtx.lineWidth = pWidth;
-                    offCtx.globalCompositeOperation = targetCtx.globalCompositeOperation; offCtx.strokeStyle = targetCtx.strokeStyle; offCtx.stroke();
-                }
-            }
-            lastX = x; lastY = y;
-        }
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-
-            if (!isAuthenticated) return;
-
-            if (data.type === 'geo_tool') {
-                geoState = data; drawGeoTool(data); return;
-            }
-
-            if (data.type === 'formulas') {
-                formulaContainer.innerHTML = ''; 
-                if (data.data && data.data.length > 0) {
-                    data.data.forEach(f => {
-                        const div = document.createElement('div');
-                        div.className = 'math-formula';
-                        div.style.left = (f.pos[0] * 100) + '%'; div.style.top = (f.pos[1] * 100) + '%'; div.style.fontSize = (48 * f.scale) + 'px';
-                        try { katex.render(f.latex, div, { throwOnError: false, displayMode: true }); } 
-                        catch (e) { div.innerText = f.latex; }
-                        formulaContainer.appendChild(div);
-                    });
-                }
-                return;
-            }
-
-            if (data.type === 'sync_start') { isSyncing = true; return; }
-            if (data.type === 'sync_end') { endSync(); return; }
-
-            if (data.type === 'lock') {
-                isLocked = data.value;
-                document.getElementById('toolbar').style.display = isLocked ? 'none' : 'flex';
-                return;
-            }
-
-            if (data.type === 'images') {
-                imageContainer.innerHTML = ''; 
-                if (data.data && data.data.length > 0) {
-                    data.data.forEach(imgData => {
-                        const img = document.createElement('img');
-                        img.src = "data:image/jpeg;base64," + imgData.data;
-                        img.style.position = 'absolute';
-                        img.style.left = (imgData.rect[0] * 100) + '%'; img.style.top = (imgData.rect[1] * 100) + '%'; img.style.width = (imgData.rect[2] * 100) + '%'; img.style.height = (imgData.rect[3] * 100) + '%';
-                        img.style.objectFit = 'fill';
-                        imageContainer.appendChild(img);
-                    });
-                }
-                return;
-            }
-
-            if (data.type === 'clear') { 
-                if (isSyncing) {
-                    offCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height); 
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    offCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height); 
-                    imageContainer.innerHTML = ''; formulaContainer.innerHTML = ''; 
-                }
-                ctx.globalCompositeOperation = 'source-over'; offCtx.globalCompositeOperation = 'source-over';
-                laserStrokes = []; currentLaserStroke = null;
-                laserCtx.clearRect(0,0,laserCanvas.width,laserCanvas.height); hlCtx.clearRect(0,0,hlCanvas.width,hlCanvas.height); 
-                activeHlAlpha = 0; lastX = null; lastY = null; 
-                return; 
-            }
-
-            // YENİ: 1000'erli Bulk Paketleri Açıp İşleme
-            if (data.type === 'bulk_points') {
-                if (data.data && Array.isArray(data.data)) {
-                    data.data.forEach(p => {
-                        processTeacherPoint(p.x, p.y, p.c, p.w);
-                    });
-                }
-                return;
-            }
-
-            // Normal Tekil Nokta İşleme
-            const pColor = data.c !== undefined ? data.c : data.color;
-            const pWidth = data.w !== undefined ? data.w : data.strokeWidth;
-            const pX = data.x;
-            const pY = data.y;
-
-            if (data.type === 'point' || pColor !== undefined) {
-                processTeacherPoint(pX, pY, pColor, pWidth);
-            }
-        };
-
-        let drawing = false;
-        let studentLastX = null;
-        let studentLastY = null;
-
-        function getPos(e) {
-            let t = e.touches && e.touches.length > 0 ? e.touches[0] : e;
-            const rect = canvas.getBoundingClientRect();
-            return { x: (t.clientX - rect.left) / rect.width, y: (t.clientY - rect.top) / rect.height };
-        }
-
-        function startDrawing(e) {
-            if (!isAuthenticated) return; 
-            if (isLocked) return; 
-            if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL' || e.target.tagName === 'SPAN') return; 
-            
-            let p = getPos(e); 
-            let gx = p.x * canvas.width; let gy = p.y * canvas.height;
-
-            let hit = checkToolHit(gx, gy);
-            if (hit) {
-                isInteractingWithTool = true; toolInteractionInfo = hit;
-                
-                if (hit.mode === 'draw') {
-                     let px = 150 + geoState.compassRadius * Math.cos(geoState.compassAngle);
-                     let py = 150 + geoState.compassRadius * Math.sin(geoState.compassAngle);
-                     let cx = geoState.cx * canvas.width; let cy = geoState.cy * canvas.height;
-                     let cScale = geoState.scale * (canvas.width / 1000);
-                     let cosR = Math.cos(geoState.rotation); let sinR = Math.sin(geoState.rotation);
-                     let lx = px - 150; let ly = py - 150;
-                     studentLastX = cx + (lx * cScale * cosR - ly * cScale * sinR);
-                     studentLastY = cy + (lx * cScale * sinR + ly * cScale * cosR);
-                     
-                     ws.send(JSON.stringify({type: 'point', x: null, y: null, c: studentColor, w: studentWidth}));
-                }
-                return;
-            }
-
-            drawing = true; 
-            let snapped = snapToTool(gx, gy); 
-            studentLastX = snapped.x; studentLastY = snapped.y;
-        }
-
-        function draw(e) {
-            if (!isAuthenticated) return; 
-            if (isLocked) return; 
-            e.preventDefault(); 
-            let p = getPos(e); let gx = p.x * canvas.width; let gy = p.y * canvas.height;
-
-            if (isInteractingWithTool) {
-                if (toolInteractionInfo.mode === 'move') {
-                    let dx = gx - toolInteractionInfo.startGx; let dy = gy - toolInteractionInfo.startGy;
-                    geoState.cx = toolInteractionInfo.startCX + (dx / canvas.width);
-                    geoState.cy = toolInteractionInfo.startCY + (dy / canvas.height);
-                    ws.send(JSON.stringify({ type: 'geo_tool', ...geoState })); drawGeoTool(geoState);
-                } 
-                else if (toolInteractionInfo.mode === 'tool_control') {
-                    let cx = toolInteractionInfo.cx; let cy = toolInteractionInfo.cy;
-                    let startAngle = Math.atan2(toolInteractionInfo.startGy - cy, toolInteractionInfo.startGx - cx);
-                    let currentAngle = Math.atan2(gy - cy, gx - cx);
-                    geoState.rotation = toolInteractionInfo.startRotation + (currentAngle - startAngle);
-                    
-                    let startDist = Math.hypot(toolInteractionInfo.startGx - cx, toolInteractionInfo.startGy - cy);
-                    let currentDist = Math.hypot(gx - cx, gy - cy);
-                    geoState.scale = Math.max(0.5, Math.min(5.0, toolInteractionInfo.startScale * (currentDist / startDist)));
-                    ws.send(JSON.stringify({ type: 'geo_tool', ...geoState })); drawGeoTool(geoState);
-                }
-                else if (toolInteractionInfo.mode === 'resize') {
-                    let local = getLocalGeoCoords(gx, gy); let dx = local.x - 150; let dy = local.y - 150;
-                    geoState.compassRadius = Math.max(20, Math.hypot(dx, dy)); geoState.compassAngle = Math.atan2(dy, dx);
-                    ws.send(JSON.stringify({ type: 'geo_tool', ...geoState })); drawGeoTool(geoState);
-                }
-                else if (toolInteractionInfo.mode === 'draw') {
-                    let local = getLocalGeoCoords(gx, gy); let dx = local.x - 150; let dy = local.y - 150;
-                    let touchAngle = Math.atan2(dy, dx);
-                    geoState.compassAngle = touchAngle - Math.atan2(-100, geoState.compassRadius / 2);
-                    
-                    let px = 150 + geoState.compassRadius * Math.cos(geoState.compassAngle);
-                    let py = 150 + geoState.compassRadius * Math.sin(geoState.compassAngle);
-                    let cx = geoState.cx * canvas.width; let cy = geoState.cy * canvas.height;
-                    let cScale = geoState.scale * (canvas.width / 1000);
-                    let cosR = Math.cos(geoState.rotation); let sinR = Math.sin(geoState.rotation);
-                    let lx = px - 150; let ly = py - 150;
-                    
-                    let pencilGlobalX = cx + (lx * cScale * cosR - ly * cScale * sinR);
-                    let pencilGlobalY = cy + (lx * cScale * sinR + ly * cScale * cosR);
-
-                    if (studentLastX !== null) {
-                        ctx.beginPath(); ctx.moveTo(studentLastX, studentLastY); ctx.lineTo(pencilGlobalX, pencilGlobalY);
-                        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = studentWidth;
-                        ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = '#800080'; ctx.stroke();
-                        
-                        offCtx.beginPath(); offCtx.moveTo(studentLastX, studentLastY); offCtx.lineTo(pencilGlobalX, pencilGlobalY);
-                        offCtx.lineCap = 'round'; offCtx.lineJoin = 'round'; offCtx.lineWidth = studentWidth;
-                        offCtx.globalCompositeOperation = 'source-over'; offCtx.strokeStyle = '#800080'; offCtx.stroke();
-                    }
-                    
-                    ws.send(JSON.stringify({ type: 'point', x: pencilGlobalX / canvas.width, y: pencilGlobalY / canvas.height, c: studentColor, w: studentWidth }));
-                    ws.send(JSON.stringify({ type: 'geo_tool', ...geoState }));
-                    studentLastX = pencilGlobalX; studentLastY = pencilGlobalY; drawGeoTool(geoState);
-                }
-                return;
-            }
-
-            if (!drawing) return; 
-
-            let snapped = snapToTool(gx, gy); 
-            const currX = snapped.x; const currY = snapped.y;
-            
-            ws.send(JSON.stringify({ type: 'point', x: currX / canvas.width, y: currY / canvas.height, c: studentColor, w: studentWidth }));
-            
-            ctx.beginPath(); ctx.moveTo(studentLastX, studentLastY); ctx.lineTo(currX, currY);
-            ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = studentWidth;
-
-            if (isEraser) { ctx.globalCompositeOperation = 'destination-out'; ctx.strokeStyle = 'rgba(0,0,0,1)'; } 
-            else { ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = '#800080'; }
-            
-            ctx.stroke();
-            
-            offCtx.beginPath(); offCtx.moveTo(studentLastX, studentLastY); offCtx.lineTo(currX, currY);
-            offCtx.lineCap = 'round'; offCtx.lineJoin = 'round'; offCtx.lineWidth = studentWidth;
-            offCtx.globalCompositeOperation = ctx.globalCompositeOperation; offCtx.strokeStyle = ctx.strokeStyle; offCtx.stroke();
-
-            studentLastX = currX; studentLastY = currY;
-        }
-
-        function stopDrawing() {
-            if (!isAuthenticated) return; 
-            if (isInteractingWithTool) {
-                if (toolInteractionInfo.mode === 'draw') { ws.send(JSON.stringify({ type: 'point', x: null, y: null, c: studentColor, w: studentWidth })); }
-                isInteractingWithTool = false; toolInteractionInfo = null; studentLastX = null; studentLastY = null; return;
-            }
-            if (!drawing) return; 
-            drawing = false; studentLastX = null; studentLastY = null;
-            if (!isLocked) { ws.send(JSON.stringify({ type: 'point', x: null, y: null, c: studentColor, w: studentWidth })); }
-        }
-
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        window.addEventListener('mouseup', stopDrawing);
-
-        canvas.addEventListener('touchstart', startDrawing, {passive: false});
-        canvas.addEventListener('touchmove', draw, {passive: false});
-        window.addEventListener('touchend', stopDrawing);
-    </script>
 </body>
 </html>
