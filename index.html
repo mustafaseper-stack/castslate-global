@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CastSlate | Global Screen Mirroring & Cloud Board</title>
+    <title>CastSlate | Global Interactive Whiteboard & Screen Mirroring</title>
     <style>
-        /* --- MODERN CSS RESET & VARIABLES --- */
         :root {
             --bg-color: #0f172a;
             --surface-color: #1e293b;
@@ -26,13 +25,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- NAVBAR --- */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 5%;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
             position: fixed;
             top: 0;
@@ -65,10 +63,9 @@
             background: var(--primary-color);
         }
 
-        /* --- HERO SECTION --- */
         .hero {
             text-align: center;
-            padding: 160px 20px 80px 20px;
+            padding: 160px 20px 60px 20px;
             max-width: 900px;
             margin: 0 auto;
         }
@@ -84,11 +81,10 @@
             font-size: 1.2rem;
             color: var(--text-muted);
             margin-bottom: 40px;
-            max-width: 600px;
+            max-width: 650px;
             margin-inline: auto;
         }
 
-        /* --- BUTTONS --- */
         .btn-group {
             display: flex;
             gap: 15px;
@@ -128,49 +124,55 @@
             background-color: rgba(255,255,255,0.1);
         }
 
-        /* --- FEATURES GRID --- */
         .features-container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 40px 20px 80px 20px;
         }
 
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
         }
 
         .card {
             background-color: var(--surface-color);
-            padding: 30px;
+            padding: 35px 30px;
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.3s;
+            transition: transform 0.3s, border-color 0.3s;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: rgba(255,255,255,0.15);
+            border-color: rgba(59, 130, 246, 0.4);
         }
 
         .card-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 15px;
         }
 
         .card h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.2rem;
+            margin: 0 0 12px 0;
+            font-size: 1.25rem;
         }
 
         .card p {
             color: var(--text-muted);
             margin: 0;
             font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        /* --- FOOTER --- */
         footer {
             text-align: center;
             padding: 40px;
@@ -179,9 +181,8 @@
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Responsive Design */
         @media (max-width: 600px) {
-            .hero h1 { font-size: 2.5rem; }
+            .hero h1 { font-size: 2.4rem; }
             .btn-group { flex-direction: column; }
             .btn { justify-content: center; }
         }
@@ -189,23 +190,19 @@
 </head>
 <body>
 
-    <!-- Üst Menü -->
     <nav class="navbar">
         <div class="logo">CastSlate</div>
         <a href="/board" class="nav-join-btn">👨‍🎓 Student Login</a>
     </nav>
 
-    <!-- Ana Vitrin -->
     <header class="hero">
-        <h1>Transform Your Tablet Into a <br> <span style="color:var(--primary-color);">Global Smartboard.</span></h1>
-        <p>Developed by an active teacher. CastSlate lets you mirror your screen locally or teach remotely via zero-latency Cloud Board.</p>
+        <h1>Transform Your Classroom Into a <br> <span style="color:var(--primary-color);">Global Interactive Space.</span></h1>
+        <p>Built by an active math teacher for real-world educators. CastSlate delivers flawless local mirroring and zero-latency cloud teaching worldwide.</p>
         
         <div class="btn-group">
-            <!-- Öğrenciyi direkt Cloud Board'a yollar -->
             <a href="/board" class="btn btn-join">
                 <span style="font-size: 1.2rem;">👨‍🎓</span> Join Remote Class
             </a>
-            <!-- Öğretmenler için indirme linkleri -->
             <a href="https://apps.apple.com/us/app/castslate-whiteboard-cast/id6780668638" class="btn btn-download">
                 🍏 App Store
             </a>
@@ -215,35 +212,44 @@
         </div>
     </header>
 
-    <!-- Özellikler Kartları -->
     <section class="features-container">
+        <h2 class="section-title">Designed for Modern Classrooms</h2>
         <div class="grid">
             <div class="card">
                 <div class="card-icon">☁️</div>
                 <h3>Cloud Board Sync</h3>
-                <p>Generate a dynamic PIN and instantly share your live whiteboard with students anywhere in the world. Zero lag, zero configuration.</p>
+                <p>Generate a secure 4-digit PIN instantly. Stream your live whiteboard, geometric drawings, and mathematical formulas directly to students anywhere in the world.</p>
             </div>
             <div class="card">
                 <div class="card-icon">📐</div>
-                <h3>Smart Geometry Set</h3>
-                <p>Equipped with a highly responsive virtual ruler, compass, protractor, and set square for flawless math and geometry lessons.</p>
+                <h3>Smart Geometry Suite</h3>
+                <p>Teach math with confidence using our fully responsive virtual ruler, rotating compass, precise protractor, and set square tools.</p>
             </div>
             <div class="card">
                 <div class="card-icon">✨</div>
-                <h3>Vector Eraser & Auto-Shape</h3>
-                <p>Effortlessly clean your board with the smart vector eraser. Draw rough shapes and watch them snap into perfect geometry.</p>
+                <h3>Auto-Shape & Vector Eraser</h3>
+                <p>Draw freehand shapes and let AI instantly snap them into clean geometric figures. Keep your workflow seamless with object-based vector erasing.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🧮</div>
+                <h3>Math Studio & KaTeX</h3>
+                <p>Render complex mathematical expressions and equations beautifully using built-in KaTeX support and graphing integration.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">✂️</div>
+                <h3>PDF Snip & Image Crop</h3>
+                <p>Import textbooks, capture exam questions directly from PDFs, crop diagrams, and paste reference materials onto your canvas instantly.</p>
             </div>
             <div class="card">
                 <div class="card-icon">📺</div>
-                <h3>Perfect 16:9 Ratio</h3>
-                <p>No more ugly black bars. CastSlate is optimized specifically for classroom smartboards, projectors, and external monitors.</p>
+                <h3>Optimized 16:9 & Shorts Mode</h3>
+                <p>Enjoy distortion-free projection on smartboards with exact 16:9 ratios, or switch to Vertical Shorts Mode (9:16) for modern educational content creation.</p>
             </div>
         </div>
     </section>
 
-    <!-- Alt Bilgi -->
     <footer>
-        <p>&copy; 2026 CastSlate Global. All rights reserved.</p>
+        <p>&copy; 2026 CastSlate Global. All rights reserved. Built for educators.</p>
     </footer>
 
 </body>
