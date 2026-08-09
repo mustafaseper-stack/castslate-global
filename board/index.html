@@ -92,9 +92,9 @@
         #pinBox h2 { margin-top: 0; color: #ffb74d; }
         #pinBox p { color: #ccc; margin-bottom: 25px; }
         #pinInput {
-            font-size: 32px;
+            font-size: 28px;
             padding: 10px;
-            width: 150px;
+            width: 180px;
             text-align: center;
             border-radius: 8px;
             border: 2px solid #546e7a;
@@ -102,7 +102,8 @@
             color: white;
             outline: none;
             margin-bottom: 20px;
-            letter-spacing: 10px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
         }
         #pinInput:focus { border-color: #ffb74d; }
         #pinSubmitBtn {
@@ -122,9 +123,9 @@
 <body>
     <div id="pinOverlay">
         <div id="pinBox">
-            <h2>Access Protected</h2>
-            <p>Please enter the 4-digit PIN from the tablet to join the session.</p>
-            <input type="password" id="pinInput" maxlength="4" placeholder="****" autocomplete="off" onkeypress="if(event.key === 'Enter') checkPin()"><br>
+            <h2>Access Protected (Beta)</h2>
+            <p>Please enter the 5-character secure code from the teacher's app.</p>
+            <input type="text" id="pinInput" maxlength="5" placeholder="ABCDE" autocomplete="off" onkeypress="if(event.key === 'Enter') checkPin()"><br>
             <button id="pinSubmitBtn" onclick="checkPin()">Connect</button>
         </div>
     </div>
@@ -208,9 +209,9 @@
         let isAuthenticated = false;
 
         function checkPin() {
-            const entered = document.getElementById('pinInput').value;
-            if (entered.trim() === "") {
-                alert("Please enter a valid PIN.");
+            const entered = document.getElementById('pinInput').value.trim().toUpperCase();
+            if (entered === "") {
+                alert("Please enter a valid secure code.");
                 return;
             }
             
@@ -549,7 +550,6 @@
             isSyncing = false;
         }
 
-        // YENİ: Nokta Çizim Mantığını Merkezi Fonksiyona Aldık
         function processTeacherPoint(pX, pY, pColor, pWidth) {
             if (pColor === 4294901777) { 
                 if (pX === null || pY === null || pX === undefined) {
@@ -686,7 +686,6 @@
                 return; 
             }
 
-            // YENİ: 1000'erli Bulk Paketleri Açıp İşleme
             if (data.type === 'bulk_points') {
                 if (data.data && Array.isArray(data.data)) {
                     data.data.forEach(p => {
@@ -696,7 +695,6 @@
                 return;
             }
 
-            // Normal Tekil Nokta İşleme
             const pColor = data.c !== undefined ? data.c : data.color;
             const pWidth = data.w !== undefined ? data.w : data.strokeWidth;
             const pX = data.x;

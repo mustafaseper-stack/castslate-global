@@ -57,10 +57,23 @@
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .nav-join-btn:hover {
             background: var(--primary-color);
+        }
+
+        .badge {
+            background-color: #f59e0b;
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
         }
 
         .hero {
@@ -164,6 +177,9 @@
         .card h3 {
             margin: 0 0 12px 0;
             font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .card p {
@@ -192,7 +208,10 @@
 
     <nav class="navbar">
         <div class="logo">CastSlate</div>
-        <a href="/board" class="nav-join-btn">👨‍🎓 Student Login</a>
+        <a href="/board" class="nav-join-btn">
+            <span>👨‍🎓 Student Login</span>
+            <span class="badge">BETA</span>
+        </a>
     </nav>
 
     <header class="hero">
@@ -201,7 +220,7 @@
         
         <div class="btn-group">
             <a href="/board" class="btn btn-join">
-                <span style="font-size: 1.2rem;">👨‍🎓</span> Join Remote Class
+                <span style="font-size: 1.2rem;">👨‍🎓</span> Join Remote Class (Beta)
             </a>
             <a href="https://apps.apple.com/us/app/castslate-whiteboard-cast/id6780668638" class="btn btn-download">
                 🍏 App Store
@@ -217,8 +236,11 @@
         <div class="grid">
             <div class="card">
                 <div class="card-icon">☁️</div>
-                <h3>Cloud Board Sync</h3>
-                <p>Generate a secure 4-digit PIN instantly. Stream your live whiteboard, geometric drawings, and mathematical formulas directly to students anywhere in the world.</p>
+                <h3>
+                    <span>Cloud Board Sync</span>
+                    <span class="badge">BETA</span>
+                </h3>
+                <p>Generate a secure 5-character alphanumeric PIN instantly. Stream your live whiteboard, geometric drawings, and mathematical formulas securely to students worldwide.</p>
             </div>
             <div class="card">
                 <div class="card-icon">📐</div>
