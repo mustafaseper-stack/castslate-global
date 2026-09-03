@@ -48,6 +48,24 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-text-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-text-btn:hover {
+            color: var(--text-main);
+        }
+
         .nav-join-btn {
             background: rgba(255,255,255,0.1);
             color: white;
@@ -201,6 +219,7 @@
             .hero h1 { font-size: 2.4rem; }
             .btn-group { flex-direction: column; }
             .btn { justify-content: center; }
+            .nav-actions { flex-direction: column; gap: 10px; align-items: flex-end; }
         }
     </style>
 </head>
@@ -208,10 +227,13 @@
 
     <nav class="navbar">
         <div class="logo">CastSlate</div>
-        <a href="/board" class="nav-join-btn">
-            <span>👨‍🎓 Student Login</span>
-            <span class="badge">BETA</span>
-        </a>
+        <div class="nav-actions">
+            <a href="privacy-policy.html" class="nav-text-btn">Privacy Policy for CastSlate</a>
+            <a href="/board" class="nav-join-btn">
+                <span>👨‍🎓 Student Login</span>
+                <span class="badge">BETA</span>
+            </a>
+        </div>
     </nav>
 
     <header class="hero">
