@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CastSlate | Global Interactive Whiteboard & Screen Mirroring</title>
+    <title>CastSlate | Interactive Whiteboard & Smartboard Remote</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -15,6 +15,10 @@
             --text-muted: #94a3b8;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -23,18 +27,20 @@
             padding: 0;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
+            padding: 15px 5%;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
             position: fixed;
             top: 0;
-            width: 90%;
+            left: 0;
+            width: 100%;
             z-index: 1000;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
@@ -46,6 +52,7 @@
             background: linear-gradient(to right, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-decoration: none;
         }
 
         .nav-actions {
@@ -96,8 +103,8 @@
 
         .hero {
             text-align: center;
-            padding: 160px 20px 60px 20px;
-            max-width: 900px;
+            padding: 140px 20px 60px 20px;
+            max-width: 950px;
             margin: 0 auto;
         }
 
@@ -112,7 +119,7 @@
             font-size: 1.2rem;
             color: var(--text-muted);
             margin-bottom: 40px;
-            max-width: 650px;
+            max-width: 700px;
             margin-inline: auto;
         }
 
@@ -124,7 +131,7 @@
         }
 
         .btn {
-            padding: 14px 32px;
+            padding: 14px 28px;
             border-radius: 12px;
             text-decoration: none;
             font-weight: bold;
@@ -132,13 +139,17 @@
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            border: none;
+            cursor: pointer;
         }
 
         .btn:hover {
             transform: translateY(-2px);
         }
 
+        /* Orijinal Buton Sınıfları Geri Getirildi */
         .btn-join {
             background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
@@ -163,20 +174,27 @@
 
         .section-title {
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 50px;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
             font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            font-size: 1.1rem;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
         }
 
         .card {
             background-color: var(--surface-color);
-            padding: 35px 30px;
+            padding: 40px 35px;
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.05);
             transition: transform 0.3s, border-color 0.3s;
@@ -188,13 +206,13 @@
         }
 
         .card-icon {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
         }
 
         .card h3 {
-            margin: 0 0 12px 0;
-            font-size: 1.25rem;
+            margin: 0 0 15px 0;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -203,8 +221,15 @@
         .card p {
             color: var(--text-muted);
             margin: 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .downloads-container {
+            background: linear-gradient(to bottom, var(--bg-color), var(--surface-color));
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         footer {
@@ -212,22 +237,33 @@
             padding: 40px;
             color: var(--text-muted);
             font-size: 0.9rem;
+            background-color: var(--surface-color);
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 2.4rem; }
-            .btn-group { flex-direction: column; }
-            .btn { justify-content: center; }
-            .nav-actions { flex-direction: column; gap: 10px; align-items: flex-end; }
+        /* Mobil Görünüm Düzeltmeleri */
+        @media (max-width: 768px) {
+            .hero { padding-top: 120px; }
+            .hero h1 { font-size: 2.2rem; }
+            .btn-group { flex-direction: column; width: 100%; padding: 0 10px; }
+            .btn { width: 100%; }
+            
+            .nav-text-btn { display: none; }
+            .logo { font-size: 1.3rem; }
+            .nav-join-btn { padding: 8px 14px; font-size: 0.85rem; }
+            .nav-join-btn .badge { display: none; }
+            
+            .grid { grid-template-columns: 1fr; }
+            .card { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo">CastSlate</div>
+        <a href="/" class="logo">CastSlate</a>
         <div class="nav-actions">
+            <a href="#host-downloads" class="nav-text-btn">Host Downloads</a>
             <a href="privacy-policy.html" class="nav-text-btn">Privacy Policy for CastSlate</a>
             <a href="/board" class="nav-join-btn">
                 <span>👨‍🎓 Student Login</span>
@@ -237,8 +273,8 @@
     </nav>
 
     <header class="hero">
-        <h1>Transform Your Classroom Into a <br> <span style="color:var(--primary-color);">Global Interactive Space.</span></h1>
-        <p>Built by an active math teacher for real-world educators. CastSlate delivers flawless local mirroring and zero-latency cloud teaching worldwide.</p>
+        <h1>Transform Your Teaching <br> <span style="color:var(--primary-color);">Anywhere, Anytime.</span></h1>
+        <p>Built by an active math teacher. CastSlate combines flawless local screen mirroring, smartboard remote control, a powerful interactive whiteboard, and zero-latency cloud teaching in one app.</p>
         
         <div class="btn-group">
             <a href="/board" class="btn btn-join">
@@ -250,50 +286,70 @@
             <a href="https://play.google.com/store/apps/details?id=com.mustafaseper.castslate" class="btn btn-download">
                 🤖 Google Play
             </a>
+            <a href="#host-downloads" class="btn btn-download">
+                💻 Host App
+            </a>
         </div>
     </header>
 
     <section class="features-container">
-        <h2 class="section-title">Designed for Modern Classrooms</h2>
+        <h2 class="section-title">Four Core Pillars of CastSlate</h2>
+        <p class="section-subtitle">Everything you need to deliver flawless lectures, perfectly integrated.</p>
+        
         <div class="grid">
+            <div class="card">
+                <div class="card-icon">📺</div>
+                <h3>1. Local Screen Broadcasting</h3>
+                <p>Mirror your device's screen to any smartboard or computer browser on the same Wi-Fi network instantly. No cables, no lag, and no complicated setup. Just scan the QR code and your screen is live in the classroom.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📱</div>
+                <h3>2. Teacher Remote Control</h3>
+                <p>Untether yourself from the smartboard. Use your device as a wireless touchpad, instantly snap and send textbook questions to the board, type text remotely, or use your phone as a gyro-laser pointer to highlight content.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">✍️</div>
+                <h3>3. Interactive Whiteboard</h3>
+                <p>A powerful canvas designed for educators. Features palm rejection (Stylus-only mode), smart geometry tools (compass, ruler, protractor), auto-shape recognition, vector erasing, and a built-in KaTeX math engine for complex formulas.</p>
+            </div>
+
             <div class="card">
                 <div class="card-icon">☁️</div>
                 <h3>
-                    <span>Cloud Board Sync</span>
+                    <span>4. Cloud Teaching Module</span>
                     <span class="badge">BETA</span>
                 </h3>
-                <p>Generate a secure 5-character alphanumeric PIN instantly. Stream your live whiteboard, geometric drawings, and mathematical formulas securely to students worldwide.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">📐</div>
-                <h3>Smart Geometry Suite</h3>
-                <p>Teach math with confidence using our fully responsive virtual ruler, rotating compass, precise protractor, and set square tools.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">✨</div>
-                <h3>Auto-Shape & Vector Eraser</h3>
-                <p>Draw freehand shapes and let AI instantly snap them into clean geometric figures. Keep your workflow seamless with object-based vector erasing.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">🧮</div>
-                <h3>Math Studio & KaTeX</h3>
-                <p>Render complex mathematical expressions and equations beautifully using built-in KaTeX support and graphing integration.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">✂️</div>
-                <h3>PDF Snip & Image Crop</h3>
-                <p>Import textbooks, capture exam questions directly from PDFs, crop diagrams, and paste reference materials onto your canvas instantly.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">📺</div>
-                <h3>Optimized 16:9 & Shorts Mode</h3>
-                <p>Enjoy distortion-free projection on smartboards with exact 16:9 ratios, or switch to Vertical Shorts Mode (9:16) for modern educational content creation.</p>
+                <p>Take your classroom online. Generate a secure 5-digit PIN and stream your live whiteboard sessions over the internet. Students anywhere in the world can join from their browsers and follow your lecture in real-time with zero latency.</p>
             </div>
         </div>
     </section>
 
+    <section class="downloads-container" id="host-downloads">
+        <h2 class="section-title">CastSlate Host Application</h2>
+        <p class="section-subtitle" style="max-width: 600px; margin-inline: auto;">
+            To use the Teacher Remote, Gyro-Laser, and Local Mirroring features, you need to run the Host App on your smartboard or computer. It acts as a secure receiver for your tablet.
+        </p>
+        
+        <div class="btn-group">
+            <a href="downloads/CastSlate_Host_macOS.zip" class="btn btn-download">
+                🍏 macOS Download
+            </a>
+            <a href="downloads/CastSlate_Host_Windows.exe" class="btn btn-download">
+                🪟 Windows Download
+            </a>
+            <a href="downloads/CastSlate_Host_Linux.zip" class="btn btn-download">
+                🐧 Pardus/Linux Download
+            </a>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">
+            *No installation required. Just download, allow permissions, and run.
+        </p>
+    </section>
+
     <footer>
-        <p>&copy; 2026 CastSlate Global. All rights reserved. Built for educators.</p>
+        <p>&copy; 2026 CastSlate Global. All rights reserved. Built for educators, by an educator.</p>
     </footer>
 
 </body>
